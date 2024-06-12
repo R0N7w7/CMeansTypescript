@@ -10,6 +10,7 @@ type Props = {
 const DataChart = ({ points, centroids }: Props) => {
   return (
     <Scatter
+      className='max-h-96'
       data={{
         datasets: [
           {

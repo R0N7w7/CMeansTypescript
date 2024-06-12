@@ -41,10 +41,10 @@ const InputPoint = (props: Props) => {
 
     return (
         <div className='w-full px-3 flex flex-col items-start gap-2'>
-            <h2 className='text-xl font-bold'>Add {props.title}</h2>
+            <h2 className='text-lg font-semibold'>Add {props.title}</h2>
             <div className='flex justify-start w-full gap-8'>
-                <InputNumber placeholder='X' value={xAxis} onChange={value => setXAxis(value ?? 0)} className='w-full text-lg' max={1000} min={-1000} />
-                <InputNumber placeholder='Y' value={yAxis} onChange={value => setYAxis(value ?? 0)} className='w-full text-lg' max={1000} min={-1000} />
+                <InputNumber placeholder='X' value={xAxis} onChange={value => setXAxis(value ?? 0)} className='w-full text-md' max={1000} min={-1000} />
+                <InputNumber placeholder='Y' value={yAxis} onChange={value => setYAxis(value ?? 0)} className='w-full text-md' max={1000} min={-1000} />
             </div>
             <div className='flex gap-2 items-center justify-center w-full'>
                 <button onClick={handleAdd} className='text-white text-md bg-black px-4 py-2 rounded-md mt-2 font-medium' >

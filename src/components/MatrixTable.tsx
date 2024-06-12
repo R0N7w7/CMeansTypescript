@@ -38,7 +38,7 @@ const MatrixTable = ({ matrix, title }: Props) => {
             title={() => <h3 className='text-xl font-semibold'>{title}:</h3>}
             dataSource={dataSource}
             columns={columns}
-            scroll={{ x: true, y: 200 }}
+            scroll={{ x: true, y: 300 }}
             pagination={false}
             className='matrix'
             tableLayout='auto'

@@ -36,16 +36,17 @@ const useCMeans = (initialAlgorithm: AlgorithmType) => {
     };
 
     const onIterate = () => {
-        if (newCentroids.length > 0 && costFunction > 0.0001) {
-            setCentroids(newCentroids);
-        } else {
+        if (newCentroids.length <= 0) {
             notification.error({
                 message: 'Error',
                 description: 'There are not enough points or centroids to start an iteration of the algorithm!',
                 duration: 3,
                 placement: 'bottomLeft'
             });
+            return
         }
+
+        setCentroids(newCentroids); // Actualizar los centroides
     };
 
     const onReset = () => {

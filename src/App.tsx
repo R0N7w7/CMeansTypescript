@@ -17,22 +17,22 @@ function App() {
 
 
   return (
-    <main className="">
+    <main className="py-3 mx-auto max-w-5xl md:px-5 lg:px-0 lg:py-6">
       <header className="py-4 px-3 flex flex-col items-center justify-center gap-4">
-        <h1 className="font-bold text-2xl">C-Means Algorithm Calculator</h1>
+        <h1 className="font-bold text-2xl md:text-3xl">C-Means Algorithm Calculator</h1>
       </header>
-      <section className="flex flex-col gap-5">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-3">
         <InputPoint action={addPoint} title="Point" />
         <InputPoint action={addCentroid} title="Centroid" />
       </section>
-      <section className="px-3 mt-8 flex flex-col gap-4">
+      <section className="px-3 mt-8 grid grid-cols-1 gap-5 md:grid-cols-2">
         <PointTable data={points} title="Points" />
         <PointTable data={centroids} title="Centroids" />
       </section>
-      <section className="px-3 mt-8">
+      <section className="px-3 mt-8 w-full flex justify-center">
         <DataChart points={points} centroids={centroids} />
       </section>
-      <section className="px-3 mt-4 flex justify-center">
+      <section className="px-3 mt-4 flex justify-center py-2">
         <h2 className="text-xl font-semibold">Cost Function: {costFunction.toFixed(4) ?? 0}</h2>
       </section>
       <section className="flex items-center justify-center gap-2">
