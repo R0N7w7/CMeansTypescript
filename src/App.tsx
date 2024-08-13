@@ -36,10 +36,10 @@ function App() {
         <h2 className="text-xl font-semibold">Cost Function: {costFunction.toFixed(4) ?? 0}</h2>
       </section>
       <section className="flex items-center justify-center gap-2">
-        <button onClick={onReset} className='text-white text-xl bg-black px-2 py-2 rounded-md mt-2 font-semibold min-w-40' >
+        <button onClick={onReset} className='text-white text-xl bg-black px-2 py-2 rounded-md mt-2 font-semibold min-w-40 active:bg-neutral-800' >
           Reset
         </button>
-        <button onClick={onIterate} className='text-white text-xl bg-black px-2 py-2 rounded-md mt-2 font-semibold min-w-40' >
+        <button onClick={onIterate} className='text-white text-xl bg-black px-2 py-2 rounded-md mt-2 font-semibold min-w-40 active:bg-neutral-800' >
           Iterate
         </button>
       </section>

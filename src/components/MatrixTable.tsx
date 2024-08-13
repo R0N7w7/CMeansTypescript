@@ -29,7 +29,7 @@ const MatrixTable = ({ matrix, title }: Props) => {
         {
             key: `row${index}`,
             centroid: index,
-            ...matrix[0].map((value) => (value.toFixed(4)))
+            ..._row.map((value) => (value.toFixed(4)))
         }
     ));
 

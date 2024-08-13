@@ -46,12 +46,12 @@ const InputPoint = (props: Props) => {
                 <InputNumber placeholder='X' value={xAxis} onChange={value => setXAxis(value ?? 0)} className='w-full text-md' max={1000} min={-1000} />
                 <InputNumber placeholder='Y' value={yAxis} onChange={value => setYAxis(value ?? 0)} className='w-full text-md' max={1000} min={-1000} />
             </div>
-            <div className='flex gap-2 items-center justify-center w-full'>
-                <button onClick={handleAdd} className='text-white text-md bg-black px-4 py-2 rounded-md mt-2 font-medium' >
+            <div className='flex gap-2 items-center justify-center w-full text-md'>
+                <button onClick={handleAdd} className='text-white bg-black px-4 py-2 rounded-md mt-2 font-medium w-full h-full active:bg-neutral-800' >
                     Add {props.title}
                 </button>
-                <button onClick={handleAddRandom} className='text-white text-md bg-black px-4 py-2 rounded-md mt-2 font-medium' >
-                    Add Random {props.title}
+                <button onClick={handleAddRandom} className='text-white bg-black px-4 py-2 rounded-md mt-2 font-medium w-full h-full active:bg-neutral-800' >
+                    Random {props.title}
                 </button>
             </div>
 
