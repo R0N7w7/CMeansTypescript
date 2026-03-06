@@ -30,7 +30,11 @@ function App() {
         <PointTable data={centroids} title="Centroids" />
       </section>
       <section className="px-3 mt-8 w-full flex justify-center">
-        <DataChart points={points} centroids={centroids} />
+        <DataChart
+          points={points}
+          centroids={centroids}
+          membershipMatrix={membershipMatrix}
+        />
       </section>
       <section className="px-3 mt-4 flex justify-center py-2">
         <h2 className="text-xl font-semibold">Cost Function: {costFunction.toFixed(4) ?? 0}</h2>
