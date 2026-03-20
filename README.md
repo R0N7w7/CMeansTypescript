@@ -1,74 +1,169 @@
-# C-Means Algorithm Calculator
+# C-Means Calculator (React + TypeScript)
 
-An interactive Vite + React + TypeScript experience for exploring both crisp and fuzzy C-Means clustering in real time.
+Interactive web application to explore both **crisp C-Means** and **Fuzzy C-Means** clustering in 2D.
 
-## How it works
+It lets you add points and centroids, iterate the algorithm, visualize cluster assignment, and inspect distance/membership matrices and cost function updates in real time.
 
-The `useCMeans` hook orchestrates the flow: it keeps track of points, centroids, and the selected algorithm (`fuzzy` by default), derives distance and membership matrices, recomputes centroids, and exposes the aggregated cost function. Each iteration replaces the centroids and updates the matrices and charts that the UI renders.
+## Table of contents
 
-## Key features
+1. [Purpose](#purpose)
+2. [Tech stack](#tech-stack)
+3. [Architecture](#architecture)
+4. [Project structure](#project-structure)
+5. [Execution flow](#execution-flow)
+6. [Implemented algorithms](#implemented-algorithms)
+7. [How to use the app](#how-to-use-the-app)
+8. [Setup and scripts](#setup-and-scripts)
+9. [Design decisions](#design-decisions)
+10. [Current limitations](#current-limitations)
+11. [Suggested roadmap](#suggested-roadmap)
 
-- Guided input: add exact or randomly generated Points and Centroids through the InputPoint component.
-- Tabular views: PointTable lists each coordinate with four decimals, while MatrixTable shows the distance and membership matrices for every iteration.
-- Visual feedback: DataChart draws both datasets using Chart.js to help you see clusters forming.
-- Control buttons: Iterate advances the clustering algorithm, Reset clears the state, and the cost function is shown live for convergence monitoring.
+## Purpose
 
-## Algorithms provided
+This project is focused on learning and visual exploration of clustering:
 
-- CMeans: the crisp variant, where each point belongs to the closest centroid, centroids update via simple means, and the membership matrix is binary.
-- fuzzyCMeans: the fuzzy variant with a soft membership matrix ($m=2$), weighted centroid updates, and a cost function that sums squared distances scaled by membership.
-- useCMeans: switches between the two implementations based on configuration and keeps the shared state of points and centroids.
-
-## Project structure
-
-- src/components: reusable UI pieces (InputPoint, DataChart, MatrixTable, PointTable).
-- src/utils: clustering logic (CMeans.ts, FuzzyCmeans.ts) and the shared hook (useCmeans.ts).
-- src/App.tsx: main layout with responsive sections, action buttons, and composed components.
+- Compare hard assignment (crisp) vs soft assignment (fuzzy).
+- Observe how centroids move across iterations.
+- Understand cost function evolution.
 
 ## Tech stack
 
-- Vite + React 18 + TypeScript
-- Ant Design for inputs, tables, and notifications
-- Chart.js + react-chartjs-2 for scatter plots
-- Tailwind CSS for responsive layout control
+- **Frontend:** React 18 + TypeScript + Vite.
+- **UI:** Ant Design + Tailwind CSS.
+- **Charts:** Chart.js + react-chartjs-2.
+- **Code quality:** ESLint + TypeScript strict mode.
 
-## Installation
+## Architecture
 
-1. Clone the repo and enter the directory:
-   ```bash
-   git clone https://github.com/username/CMeansTypescript.git
-   cd CMeansTypescript
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+The app follows a clear separation between presentation and numeric logic:
 
-## Running the project
+1. **UI layer (components):** receives user input and renders tables/charts.
+2. **State and orchestration layer (hook):** centralizes points, centroids, and iteration flow.
+3. **Algorithm layer (utils):** computes distances, memberships, centroids, and cost.
 
-1. Start the dev server:
-   ```bash
-   npm run dev
-   ```
-   Visit http://localhost:5173 in your browser.
-2. Build for production:
-   ```bash
-   npm run build
-   ```
-3. Lint the codebase:
-   ```bash
-   npm run lint
-   ```
+### Conceptual diagram
 
-## Usage
+```text
+UI (App + components)
+  -> useCMeans (state + algorithm selection)
+    -> CMeans / fuzzyCMeans (math computation)
+      -> outputs: matrices, new centroids, cost
+    -> UI re-renders with updated outputs
+```
 
-1. Add points or centroids either by manually typing coordinates or by generating random ones.
-2. Click Iterate to recompute centroids based on the selected algorithm and observe updated matrices and graphs.
-3. Check the displayed cost function to evaluate convergence.
-4. Hit Reset to clear all points and centroids and start over.
+## Project structure
 
-## Suggested next steps
+```text
+.
+|-- index.html
+|-- package.json
+|-- vite.config.ts
+|-- tailwind.config.js
+|-- src
+|   |-- App.tsx                 # main UI composition
+|   |-- main.tsx                # React bootstrap
+|   |-- index.css               # Tailwind directives
+|   |-- vite-env.d.ts           # global types (Point)
+|   |-- components
+|   |   |-- InputPoint.tsx      # manual/random point and centroid input
+|   |   |-- PointTable.tsx      # points/centroids table
+|   |   |-- MatrixTable.tsx     # distance/membership matrix table
+|   |   |-- DataChart.tsx       # scatter plot with dominant-cluster coloring
+|   |-- utils
+|   |   |-- CMeans.ts           # crisp C-Means algorithm
+|   |   |-- FuzzyCmeans.ts      # Fuzzy C-Means algorithm
+|   |   |-- useCmeans.ts        # orchestration/state hook
+```
 
-1. Add a UI control to toggle between the crisp and fuzzy variants.
-2. Enable editing or removing previously added points or centroids.
-3. Persist or export iteration data for further analysis.
+## Execution flow
+
+1. User adds points and centroids from the UI.
+2. The `useCMeans` hook recomputes derived values through `useMemo` when state changes.
+3. Depending on the selected algorithm, it runs `CMeans` or `fuzzyCMeans`.
+4. The following outputs are produced:
+   - distance matrix,
+   - membership matrix,
+   - new centroids,
+   - cost values and total cost.
+5. When clicking **Iterate**, centroids are replaced by `newCentroids`.
+6. UI immediately reflects updated tables, chart, and cost.
+
+## Implemented algorithms
+
+### 1) Crisp C-Means (CMeans.ts)
+
+- Distance: Euclidean in 2D.
+- Membership: binary (each point belongs to the closest centroid).
+- Centroid update: arithmetic mean of assigned points.
+- Cost: sum of distances for active assignments.
+
+### 2) Fuzzy C-Means (FuzzyCmeans.ts)
+
+- Fixed fuzzification parameter: $m = 2$.
+- Soft membership:
+
+$$
+u_{ij} = \frac{1}{\sum_{k=1}^{c}\left(\frac{d_{ij}}{d_{kj}}\right)^{\frac{2}{m-1}}}
+$$
+
+- Centroid update weighted by $u_{ij}^m$.
+- Fuzzy objective function:
+
+$$
+J = \sum_{i=1}^{c}\sum_{j=1}^{n} u_{ij}^m\, d_{ij}^2
+$$
+
+## How to use the app
+
+1. Add points in **Add Point** (manual or random).
+2. Add centroids in **Add Centroid** (manual or random).
+3. Observe distribution in the scatter chart.
+4. Click **Iterate** to run one algorithm step.
+5. Repeat until centroids/cost stabilize.
+6. Use **Reset** to start over.
+
+## Setup and scripts
+
+### Requirements
+
+- Node.js 18 or newer.
+- npm 9 or newer.
+
+### Install
+
+```bash
+npm install
+```
+
+### Available scripts
+
+```bash
+npm run dev      # Vite development server
+npm run build    # TypeScript check + production build
+npm run preview  # preview production build
+npm run lint     # ESLint static analysis
+```
+
+By default, development server runs at `http://localhost:5173`.
+
+## Design decisions
+
+- **Single domain hook (`useCMeans`)** to centralize state and iteration rules.
+- **Pure utility functions in `utils`** to keep math logic testable and React-agnostic.
+- **Dominant-cluster color mapping in chart** to improve fuzzy result readability.
+- **Matrix tables** to make each iteration traceable.
+
+## Current limitations
+
+- UI starts in `fuzzy` mode by default and does not yet expose an algorithm selector.
+- No persistence or export for experiment sessions.
+- No per-point or per-centroid edit/delete actions (only global reset).
+- No unit/integration test suite yet.
+
+## Suggested roadmap
+
+1. Add a UI selector to switch between `crisp` and `fuzzy`.
+2. Expose fuzzification parameter $m$ in the UI.
+3. Add iteration history (centroids and cost per step).
+4. Export data and matrices to CSV/JSON.
+5. Add tests for `utils` and `useCMeans`.
